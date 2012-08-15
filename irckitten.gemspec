@@ -2,7 +2,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name = 'irckitten'
-  s.version = '0.0.2'
+  s.version = '0.0.3'
   s.platform = Gem::Platform::RUBY
   s.authors = ['Ben Hughes']
   s.email = ['ben@mumble.org.uk']
