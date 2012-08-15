@@ -3,6 +3,6 @@
 lib = File.expand_path('../../lib', __FILE__)
 $:.unshift(lib) unless $:.include?(lib)
 
-require 'irckitten/irckitten'
+require 'irckitten'
 
-IrcKitten::IrcKitten::msg ARGV.join ' '
+IrcKitten::msg ARGV.join ' '
