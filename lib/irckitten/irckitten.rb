@@ -10,17 +10,17 @@ require 'resolv'
 # require 'awesome_print'
 # require 'pry'
 
+
+begin
+  require 'rubygems'
+  require 'system_timer'
+  MyTimer = SystemTimer
+rescue LoadError
+  require 'timeout'
+  MyTimer = Timeout
+end
+
 module IrcKitten
-
-  begin
-    require 'rubygems'
-    require 'system_timer'
-    MyTimer = SystemTimer
-  rescue LoadError
-    require 'timeout'
-    MyTimer = Timeout
-  end
-
 
   class IrcKitten
 
