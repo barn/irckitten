@@ -46,8 +46,21 @@ module IrcKitten
 
   private
 
+  def self.getmyhostname
+    hostname = Socket.gethostname
+
+    if hostname.count( '.' ) < 1
+      hostname = Socket.gethostbyname( Socket.gethostname ).first
+    end
+
+    # if we can't get it, return false and bail.
+    return false if hostname.count( '.' ) < 1
+
+    hostname
+  end
+
   def self.givemedomains
-    @myhostname ||= Socket.gethostname
+    @myhostname ||= self.getmyhostname
     currentdomain = @myhostname
 
     domain = []
