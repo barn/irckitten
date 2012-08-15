@@ -76,28 +76,29 @@ module IrcKitten
       true
     end
 
-    # I stole this chunk from http://www.das-labor.org/svn/tools/jabber-bot/xmpp4r-0.3/lib/xmpp4r/client.rb
-    # Which is GPL, so I think I'm good.
+    # Get the SRV records from DNS, uses the constant to add to each
+    # domain to get the record to try. Returns a vaguely sorted thing.
     def self.getsrvrecords
-      begin
-        srv = []
-        Resolv::DNS.open { |dns|
-          # If ruby version is too old and SRV is unknown, this will raise a NameError
-          # which is catched below
-          self.givemedomains.each do |d|
-            rr = DNSRECORD + d
-            srv = dns.getresources( rr , Resolv::DNS::Resource::IN::SRV)
-            break unless srv.nil?
-          end
-        }
-        # Sort SRV records: lowest priority first, highest weight first
-        srv.sort! { |a,b| (a.priority != b.priority) ? (a.priority <=> b.priority) : (b.weight <=> a.weight) }
 
-      rescue NameError
-        $stderr.puts "Resolv::DNS does not support SRV records. Please upgrade to ruby-1.8.3 or later!"
+      srvs = nil
+      begin
+        Resolv::DNS.open do |dns|
+          self.givemedomains.each do |domain|
+            srvs = dns.getresources( DNSRECORD + domain , Resolv::DNS::Resource::IN::SRV)
+            break unless srvs.nil?
+          end
+        end
+
+        # Don't bother sorting them if we just have one!
+        return srvs if srvs.size == 1
+
+        srvs.sort! { |a,b| (a.priority != b.priority) ? (a.priority <=> b.priority) : (b.weight <=> a.weight) }
+
+      rescue NameError => e
+        $stderr.puts "Problem resolving DNS due to #{e}."
       end
 
-      srv
+      srvs
     end
 
   end
