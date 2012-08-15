@@ -10,15 +10,25 @@ require 'resolv'
 # require 'awesome_print'
 # require 'pry'
 
-
-begin
-  require 'rubygems'
-  require 'system_timer'
-  MyTimer = SystemTimer
-rescue LoadError
+# This is to use system_timer if it's there on 1.8.7, or Timeout as a fall
+# back. On 1.9.x just use timeout.
+# http://davidvollbracht.com/blog/30-days-of-tech-day-1-systemtimer
+# http://ph7spot.com/musings/system-timer
+if RUBY_VERSION =~ /1\.8\./
+  begin
+    require 'rubygems'
+    require 'system_timer'
+    MyTimer = SystemTimer
+  rescue LoadError
+    require 'timeout'
+    MyTimer = Timeout
+  end
+else
+  # 1.9 Timeout works.
   require 'timeout'
   MyTimer = Timeout
 end
+
 
 module IrcKitten
 
